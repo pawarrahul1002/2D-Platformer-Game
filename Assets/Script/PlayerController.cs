@@ -7,24 +7,33 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     public Animator animator;
-    public float speed;
-    public float jump;
-    public BoxCollider2D boxCollider2D;
+    public CapsuleCollider2D capCollider2D;
+    // public BoxCollider2D boxCollider2D;
     private Rigidbody2D rb2D;
+    
+    public float start_x, start_y;
 
-    private int livesRemain = 3;
+
+    public float crouchOffSetx, crouchOffSety;
+    public float crouchSizex, crouchSizey;
+    public float offsetx, offsety;
+    public float sizex, sizey;
     private bool gameOver;
+    public float speed;
+    public float jumpForce;
+    public float downForce;
+    public float ConstdownForce;
+    private bool onGround;
+    private int jumpCount = 0;
+    [SerializeField]
+    private int livesRemain = 1;
     public Image life01;
     public Image life02;
     public Image life03;
-    Vector3 startPos;
-    private Text scoreText;
     public Text highScoreText;
     public Button gameOverButton;
-
     public ScoreController scoreController;
     public string restartScene;
-
     private int scoreValue = 10;
 
     //awake is used to intialize any variable or game state before game starts
@@ -34,7 +43,6 @@ public class PlayerController : MonoBehaviour
         rb2D = gameObject.GetComponent<Rigidbody2D>();
     }
 
-    //PickUpKey() = this will increases score after key pick
     public void PickUpKey()
     {
         scoreController.increaseScore(scoreValue);
@@ -45,7 +53,7 @@ public class PlayerController : MonoBehaviour
     public void KillPlayer()
     {
         livesRemain--;
-        transform.position = new Vector3(-80, -1.5f, 0);
+        transform.position = new Vector3(start_x, start_y, 0);
         transform.localScale = new Vector3(2, 2, 2);
         updateLifeUI();
         if (gameOver == true)
@@ -96,30 +104,65 @@ public class PlayerController : MonoBehaviour
     //this func help inn reloading scene with the help of game over button
     public void ReloadScene()
     {
+        Debug.Log("reload this scene");
         SceneManager.LoadScene(restartScene);
     }
-
+    float horizantal;
+    float vertical;
+    bool crouch;
     private void Update()
     {
-        float horizantal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Jump");      //use "Jump" or "Vertical" both are same
-        bool crouch = Input.GetKey("left ctrl");
+        horizantal = Input.GetAxisRaw("Horizontal");
+        vertical = Input.GetAxisRaw("Jump");      //use "Jump" or "Vertical" both are same
+        crouch = Input.GetKey("left ctrl");
         MoveCharacter(horizantal, vertical);
         PlayMovementAniamation(horizantal, vertical, crouch);
 
     }
 
-    private void MoveCharacter(float horizantal, float vertical)
+    //checking Player on ground or not and setting bool onGround
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        //Move horizaontally
-        RunChar(horizantal);
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            onGround = true;
 
-        // Move Verically
-        JumpChar(vertical);
+        }
+        if (collision.gameObject.CompareTag("MovingPlatform"))
+        {
+            Debug.Log("123456");
+            onGround = true;
+            transform.parent = collision.transform;
+            rb2D.gravityScale=0;
+
+
+        }
+
+
 
     }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            onGround = false;
+        }
+        if (collision.gameObject.CompareTag("MovingPlatform"))
+        {
+            onGround = false;
+            transform.parent = null;
+            rb2D.gravityScale=1;
 
-    //this RunChar func will run our player
+
+        }
+    }
+
+    private void MoveCharacter(float horizantal, float vertical)
+    {
+        RunChar(horizantal);
+        JumpChar(vertical);
+    }
+
     void RunChar(float horizantal)
     {
         Vector3 pos = transform.position;
@@ -127,23 +170,16 @@ public class PlayerController : MonoBehaviour
         transform.position = pos;
     }
 
-    //JumpChar func will do jump our player
     void JumpChar(float vertical)
     {
-        if (vertical > 0)
+        if ((vertical > 0) && (onGround == true))
         {
-            // rb2D.AddForce(new Vector2(0f, jump), ForceMode2D.Force);
-            rb2D.velocity = new Vector2(0.0f, 5.0f);
-            // rb2d.velocity = new Vector2(0.0f, -10.0f);
-        }
-        else
-        {
-            rb2D.velocity = new Vector2(0.0f, -5.0f);
-
+            rb2D.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            // rb2D.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            // Debug.Log("jump on");
+            onGround = false;
         }
     }
-
-    // this will control animation
     private void PlayMovementAniamation(float horizantal, float vertical, bool crouch)
     {
         RunAnim(horizantal);
@@ -165,38 +201,62 @@ public class PlayerController : MonoBehaviour
             scale.x = Mathf.Abs(scale.x);
         }
         transform.localScale = scale;
-
     }
-
-    //JumpAnim fun for jump animation
     void JumpAnim(float vertical)
     {
-        if (vertical > 0)
+        if (vertical > 0 && rb2D.velocity.y > 0)
         {
-            animator.SetBool("Jump", true);
+            if (jumpCount == 0 && onGround == false)
+            {
+                animator.SetBool("IsJump", true);
+                jumpCount = 1;
+            }
+            animator.SetBool("JumpFall", false);
         }
         else
         {
-            animator.SetBool("Jump", false);
+            animator.SetBool("JumpFall", true);
+            animator.SetBool("IsJump", false);
+            rb2D.velocity = new Vector2(0.0f, downForce);
+
+            if (onGround == true)
+            {
+                jumpCount = 0;
+                animator.SetBool("JumpFall", false);
+                rb2D.velocity = new Vector2(0.0f, ConstdownForce);
+
+            }
+        }
+        if ((rb2D.velocity.y == 0) && (onGround == true))
+        {
+            animator.SetBool("JumpFall", false);
+        }
+
+        if (onGround == false)
+        {
+            animator.SetBool("JumpFall", true);
         }
     }
-
 
     //CrouchAnim fun for crouch animation
     void CrouchAnim(bool crouch)
     {
         if (crouch == true)
         {
-            animator.SetBool("Crouch", crouch);
-            boxCollider2D.offset = new Vector2(-0.004810318f, 0.6084107f);
-            boxCollider2D.size = new Vector2(0.4740263f, 1.351288f);
+            animator.SetBool("IsCrouch", crouch);
+            capCollider2D.offset = new Vector2(crouchOffSetx, crouchOffSety);
+            capCollider2D.size = new Vector2(crouchSizex, crouchSizey);
+            // boxCollider2D.offset = new Vector2(-0.004810318f, 0.6084107f);
+            // boxCollider2D.size = new Vector2(0.4740263f, 1.351288f);
 
         }
         else
         {
-            animator.SetBool("Crouch", crouch);
-            boxCollider2D.offset = new Vector2(-0.004810318f, 0.9641527f);
-            boxCollider2D.size = new Vector2(0.4740263f, 2.012844f);
+            animator.SetBool("IsCrouch", crouch);
+            capCollider2D.offset = new Vector2(offsetx, offsety);
+            capCollider2D.size = new Vector2(sizex, sizey);
+            // boxCollider2D.offset = new Vector2(-0.004810318f, 0.9641527f);
+            // boxCollider2D.size = new Vector2(0.4740263f, 2.012844f);
         }
     }
 
