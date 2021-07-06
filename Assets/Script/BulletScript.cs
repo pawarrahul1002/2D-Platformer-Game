@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-    public float speed = 20f;
+    [SerializeField] float speed = 20f;
+    [SerializeField] int damage = 10;
     public Rigidbody2D rb;
-    public int damage = 10;
     public PlayerController player;
 
     // Update is called once per frame

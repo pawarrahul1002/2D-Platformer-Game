@@ -4,16 +4,13 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
+    [SerializeField] float distance = 8f;
     void Update()
     {
 
         float x = transform.position.x;
-        float y = Mathf.Sin(Time.time) * 8f;
-
-        // float x = Mathf.Sin(Time.time) * 2f;
-        // float y = transform.position.y;
+        float y = Mathf.Sin(Time.time) * distance;
         float z = transform.position.z;
-
         transform.position = new Vector3(x, y, z);
     }
 }

@@ -16,12 +16,10 @@ public class RestartLevel : MonoBehaviour
     }
     public void onEasyButtonClick()
     {
-        Debug.Log("1");
         SceneManager.LoadScene(Scene01); 
     }
     public void onHardButtonClick()
     {
-        Debug.Log("2");
         SceneManager.LoadScene(Scene02); 
     }
 

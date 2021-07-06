@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
@@ -12,6 +13,11 @@ public class LobbyControlller : MonoBehaviour
     {
         SoundManager.Instance.Play(Sounds.ButtonClick);
         SceneManager.LoadScene(gameSceneName);
+    }
+
+    public void QuitButton(){
+        Debug.Log("Should Quit");
+        Application.Quit();
     }
 
 }

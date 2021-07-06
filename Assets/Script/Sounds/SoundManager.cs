@@ -29,9 +29,7 @@ public class SoundManager : MonoBehaviour
     private void Start(){
         PlayMusic(global::Sounds.Music);
     }
-
-
-
+    
     public void PlayMusic(Sounds sound)
     {
 

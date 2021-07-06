@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public float speed;
-    public bool moveRight;
-    public int enemyHealth = 40;
+    [SerializeField] float speed;
+    [SerializeField] bool moveRight;
+    [SerializeField] int enemyHealth = 40;
+    [SerializeField] bool idleEnemy = false;
     public Animator anim;
-    public bool idleEnemy = false;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -54,12 +54,7 @@ public class EnemyController : MonoBehaviour
         enemyHealth -= damage;
         if (enemyHealth <= 0)
         {
-            // anim.SetBool("Dead", true);
-
             StartCoroutine(PlayDeadEnemy());
-            // Destroy(gameObject);
-
-
         }
     }
 
@@ -74,7 +69,6 @@ public class EnemyController : MonoBehaviour
     {
         if (!idleEnemy)
         {
-
             MoveEnemy();
         }
     }

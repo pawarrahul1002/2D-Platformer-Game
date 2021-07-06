@@ -1,70 +1,75 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
+// namespace Player{
 public class PlayerController : MonoBehaviour
 {
-    public Animator animator;
-    public CapsuleCollider2D capCollider2D;
-    // public BoxCollider2D boxCollider2D;
+    private Animator animator;
+    private CapsuleCollider2D capCollider2D;
     private Rigidbody2D rb2D;
-    [SerializeField] LayerMask platformLayerMask;
 
-    public float start_x, start_y;
-
-
-    public float crouchOffSetx, crouchOffSety;
-    public float crouchSizex, crouchSizey;
-    public float offsetx, offsety;
-    public float sizex, sizey;
+    [Header("Crouch position")]
+    [SerializeField] float crouchOffsetx;
+    [SerializeField] float crouchOffsety;
+    [SerializeField] float crouchSizex, crouchSizey;
+    [SerializeField] float offsetx, offsety;
+    [SerializeField] float sizex, sizey;
     private bool gameOver;
-    public float speed;
-    public float jumpForce;
-    public float downForce;
-    public float ConstdownForce;
+    [Header("Movement Setting")]
+    [SerializeField] float speed;
+    [SerializeField] float jumpForce;
+    [SerializeField] float downForce;
     private bool onGround;
     private int jumpCount = 0;
+
+    [Header("Health Setting")]
     [SerializeField] int livesRemain = 1;
-    public Image life01;
-    public Image life02;
-    public Image life03;
-    public Text highScoreText;
-    public Button gameOverButton;
-    public ScoreController scoreController;
-    public string restartScene;
+    [SerializeField] Image[] heart;
+    [SerializeField] Text scoreText;
+    // public Text totalScoreText;
+    [SerializeField] Image gameOverButtonImage;
+    public Image nextSceneButtonImage;
+    [SerializeField] ScoreController scoreController;
     private int scoreValue = 10;
     [HideInInspector] public bool isFacingRight = true;
     [HideInInspector] public bool withGun = false;
-    // public Transform firePoint;
-    //awake is used to intialize any variable or game state before game starts
-    //awake is always called before satrt function
-    private void Awake()
-    {
-        rb2D = gameObject.GetComponent<Rigidbody2D>();
-        // Transform scale = transform.localScale;
-        // Vector2 playerPos =  transform.position;
-        // Vector2 firePointPos =   FirePoint.position;
+    private AudioSource audioSource;
+    [SerializeField] AudioClip[] PlayerSounds;
+    private float volume = 0.5f;
 
-        // firePointPos.x = playerPos.x - 60;
-        // FirePoint.position.x = transform.position;
+    private enum Sounds
+    {
+        key,
+        playerDied,
+        jump,
+        fire
     }
 
+    //<summry>
+    // awake is used to intialize any variable or game state before game starts
+    // awake is always called before satrt function
 
-
+    private void Awake()
+    {
+        rb2D = GetComponent<Rigidbody2D>();
+        capCollider2D = GetComponent<CapsuleCollider2D>();
+        audioSource = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
+    }
     public void PickUpKey()
     {
+        audioSource.PlayOneShot(PlayerSounds[(int)(Sounds.key)], volume);
         scoreController.increaseScore(scoreValue);
     }
 
-    //killPlayer will reduce health by one and reload player to start position
-    //after three chance game over button will pop up
+    //<summry>
+    // killPlayer will reduce health by one and reload player to start position
+    // after three chance game over button will pop up
     public void KillPlayer()
     {
-        SoundManager.Instance.PlayMusic(Sounds.PlayerDeath);
+        audioSource.PlayOneShot(PlayerSounds[(int)(Sounds.playerDied)], volume);
         livesRemain--;
-        transform.position = new Vector3(start_x, start_y, 0);
+        transform.position = new Vector3(0, 0, 0);
         transform.localScale = new Vector3(2, 2, 2);
         updateLifeUI();
         if (gameOver == true)
@@ -76,61 +81,49 @@ public class PlayerController : MonoBehaviour
     //this text func helps in showing final score
     public void GameOverButtonText()
     {
-        gameOverButton.gameObject.SetActive(true);
-        highScoreText.text = "Total Score: " + scoreController.score.ToString();
+        gameOverButtonImage.gameObject.SetActive(true);
+        scoreText.text = "Total Score: " + scoreController.score.ToString();
     }
 
-    //this update fun will deactivate heart compoenent
+    //this update function will deactivate heart compoenent
     private void updateLifeUI()
     {
         if (livesRemain == 3)
         {
-            life01.gameObject.SetActive(true);
-            life02.gameObject.SetActive(true);
-            life03.gameObject.SetActive(true);
+            heart[0].gameObject.SetActive(true);
+            heart[1].gameObject.SetActive(true);
+            heart[2].gameObject.SetActive(true);
         }
         if (livesRemain == 2)
         {
-            life01.gameObject.SetActive(true);
-            life02.gameObject.SetActive(true);
-            life03.gameObject.SetActive(false);
+            heart[0].gameObject.SetActive(true);
+            heart[1].gameObject.SetActive(true);
+            heart[2].gameObject.SetActive(false);
         }
         if (livesRemain == 1)
         {
-
-            life01.gameObject.SetActive(true);
-            life02.gameObject.SetActive(false);
-            life03.gameObject.SetActive(false);
+            heart[0].gameObject.SetActive(true);
+            heart[1].gameObject.SetActive(false);
+            heart[2].gameObject.SetActive(false);
         }
         if (livesRemain == 0)
         {
-
-            life01.gameObject.SetActive(false);
-            life02.gameObject.SetActive(false);
-            life03.gameObject.SetActive(false);
+            heart[0].gameObject.SetActive(false);
+            heart[1].gameObject.SetActive(false);
+            heart[2].gameObject.SetActive(false);
             gameOver = true;
         }
     }
 
-    //this func help inn reloading scene with the help of game over button
-    public void ReloadScene()
-    {
-        Debug.Log("reload this scene");
-        SceneManager.LoadScene(restartScene);
-    }
-
-
     ///from here script is for movement
-
-    public float horizantal;
-    float vertical;
-    bool crouch;
+    private float horizantal;
+    private float vertical;
+    private bool crouch;
     private void Update()
     {
         horizantal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Jump");      //use "Jump" or "Vertical" both are same
         crouch = Input.GetKey(KeyCode.DownArrow);
-        // onGrounded();
 
     }
 
@@ -168,36 +161,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // private void onGrounded()
-    // {
-    //     // Debug.Log("f called");
-    //     float extraHeightText = 2f;
-    //     RaycastHit2D rayCastHit = Physics2D.Raycast(capCollider2D.bounds.center, Vector2.down, capCollider2D.bounds.extents.y + extraHeightText);
-    //     Color rayColor;
-
-    //     // if (rayCastHit.collider != null)
-    //     if (rayCastHit.collider.CompareTag("Platform")==true)
-    //     {
-    //         rayColor = Color.red;
-    //     }
-    //     else
-    //     {
-    //         rayColor = Color.green;
-    //     } 
-    //     Debug.DrawRay(capCollider2D.bounds.center, Vector2.down * (capCollider2D.bounds.extents.y + extraHeightText), rayColor);
-    //     // return false;
-    //     // if (rayCastHit.collider != null)
-    //     // {
-    //     //     onGround = false;
-    //     // }
-    //     // else
-    //     // {
-    //     //     onGround = true;
-    //     // }
-
-    // }
-
-
     private void MoveCharacter(float horizantal, float vertical)
     {
         RunChar(horizantal);
@@ -218,10 +181,6 @@ public class PlayerController : MonoBehaviour
             rb2D.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
             onGround = false;
         }
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     rb2D.velocity = Vector2.up * jumpForce;
-        // }
 
     }
     private void PlayMovementAniamation(float horizantal, float vertical, bool crouch)
@@ -235,9 +194,10 @@ public class PlayerController : MonoBehaviour
 
     private void IdleWithGun()
     {
-        // if (Input.GetButtonDown("left ctrl"))
         if (Input.GetButton("Fire1"))
         {
+
+            audioSource.PlayOneShot(PlayerSounds[(int)Sounds.fire], volume);
             withGun = true;
             animator.SetBool("WithGun", true);
         }
@@ -271,6 +231,8 @@ public class PlayerController : MonoBehaviour
         {
             if (jumpCount == 0 && onGround == false)
             {
+
+                audioSource.PlayOneShot(PlayerSounds[(int)Sounds.jump], volume);
                 animator.SetBool("IsJump", true);
                 jumpCount = 1;
             }
@@ -286,7 +248,6 @@ public class PlayerController : MonoBehaviour
             {
                 jumpCount = 0;
                 animator.SetBool("JumpFall", false);
-                rb2D.velocity = new Vector2(0.0f, ConstdownForce);
 
             }
         }
@@ -307,21 +268,14 @@ public class PlayerController : MonoBehaviour
         if (crouch == true)
         {
             animator.SetBool("IsCrouch", crouch);
-            capCollider2D.offset = new Vector2(crouchOffSetx, crouchOffSety);
+            capCollider2D.offset = new Vector2(crouchOffsetx, crouchOffsety);
             capCollider2D.size = new Vector2(crouchSizex, crouchSizey);
-            // boxCollider2D.offset = new Vector2(-0.004810318f, 0.6084107f);
-            // boxCollider2D.size = new Vector2(0.4740263f, 1.351288f);
         }
         else
         {
             animator.SetBool("IsCrouch", crouch);
             capCollider2D.offset = new Vector2(offsetx, offsety);
             capCollider2D.size = new Vector2(sizex, sizey);
-            // boxCollider2D.offset = new Vector2(-0.004810318f, 0.9641527f);
-            // boxCollider2D.size = new Vector2(0.4740263f, 2.012844f);
         }
     }
-
-    
-
 }

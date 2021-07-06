@@ -5,15 +5,24 @@ using UnityEngine.SceneManagement;
 
 public class LevelOverController : MonoBehaviour
 {
-    public string level2Scene;
+    // public string level2Scene;
+    // public PlayerController player;
+    public PlayerController player;// = gameObject.GetComponent<PlayerController>();
+    // public ScoreController scoreController;
+    
     private void OnTriggerEnter2D(Collider2D collison)
     {
         // if (collision.gameobject.CompareTag("Player"))
         if (collison.gameObject.GetComponent<PlayerController>() != null)
         {
-            Debug.Log("Level Finished by the player");
-            SceneManager.LoadScene(level2Scene);
+            LevelManager.Instance.MarkCurrentLevelComplete();
             
+            // SceneManager.LoadScene(level2Scene);
+            // PlayerController player = gameObject.GetComponent<PlayerController>();
+            player.nextSceneButtonImage.gameObject.SetActive(true);
+            // player.highScoreText.text = "Total Score: " + scoreController.score.ToString();
+            // player.ReloadScene(); 
+
         }
     }
 }

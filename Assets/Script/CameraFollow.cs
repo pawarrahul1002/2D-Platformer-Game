@@ -2,11 +2,11 @@
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;
-    public Vector3 offset;
+    [SerializeField] private Transform target;
+    [SerializeField] private Vector3 offset;
     [Range(1,10)]
-    public float smoothFactor;
-    private void FixedUpdate()
+    [SerializeField] private float smoothFactor;
+    private void LateUpdate()
     {
         Follow();
     }
