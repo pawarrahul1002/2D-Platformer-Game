@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Elle2D
 {
-    //this moves platform up and down
+    //this moves platform in cross way up and down
     public class CrossMovingPlatform : MonoBehaviour
     { 
         [SerializeField] float distance = 2.5f;

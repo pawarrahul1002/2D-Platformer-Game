@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace Elle2D
 {
+    /*this class is comes in use when player dies and also for button in menu*/
     public class RestartLevel : MonoBehaviour
     { 
         public string restartGame;

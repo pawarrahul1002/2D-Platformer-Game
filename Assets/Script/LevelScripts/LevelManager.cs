@@ -5,6 +5,8 @@ using System;
 
 namespace Elle2D
 {
+    /*this is levelmanager class we use singleton here to
+     keep only one instance all over the game*/
     public class LevelManager : MonoBehaviour
     {
         private static LevelManager instance;

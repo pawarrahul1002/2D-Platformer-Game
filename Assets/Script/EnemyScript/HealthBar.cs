@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 namespace Elle2D
 {
+
+    //summary : this class is control health bar for enemy
     public class HealthBar : MonoBehaviour
     {
         public Slider slider;

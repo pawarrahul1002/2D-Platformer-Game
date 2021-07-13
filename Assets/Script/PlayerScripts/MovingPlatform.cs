@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Elle2D
 {
+    //this class is used for moving platform up and down with help of coroutine
     public class MovingPlatform :  MonoBehaviour
     {
         Vector3 moveDirection = Vector3.down;

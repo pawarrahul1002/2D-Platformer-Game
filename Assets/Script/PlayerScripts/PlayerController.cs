@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace Elle2D
 {
+    //this class controll player health , damage, different aniamations and all movements
     public class PlayerController : MonoBehaviour
     {
         private Animator animator;

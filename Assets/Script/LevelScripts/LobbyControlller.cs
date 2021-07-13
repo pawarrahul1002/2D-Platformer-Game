@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 namespace Elle2D
 {
+    /*this class is for buttons of lobby*/
     public class LobbyControlller : MonoBehaviour
     {
         public string gameSceneName;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Elle2D
 {
+    //this class controlls movement, health, damage of enemies  
     public class EnemyController : MonoBehaviour
     {
         [SerializeField] float speed;
@@ -11,6 +12,14 @@ namespace Elle2D
         public int enemyHealth = 40;
         [SerializeField] bool idleEnemy = false;
         public Animator anim;
+
+        void Update()
+        {
+            if (!idleEnemy)
+            {
+                MoveEnemy();
+            }
+        }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
@@ -69,16 +78,10 @@ namespace Elle2D
 
             idleEnemy = true;
             yield return new WaitForSeconds(1f);
-             gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
 
 
-        void Update()
-        {
-            if (!idleEnemy)
-            {
-                MoveEnemy();
-            }
-        }
+
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Elle2D
 {
+    //this class is control boss enemy, its movement damage and health and also shoot
     public class Gunner : MonoBehaviour
     {
         [SerializeField] public LayerMask playerLayer;
@@ -37,6 +38,9 @@ namespace Elle2D
             checkCollision();
             CheckGunnerhealth();
         }
+
+        /*this fun checks collision with player and if collision h
+        appen using raycast then shoot fun is called, also control sound of shooting */
         void checkCollision()
         {
             RaycastHit2D leftHit = Physics2D.Raycast(leftCollison.position, Vector2.left, 15f, playerLayer);
@@ -58,6 +62,7 @@ namespace Elle2D
             healthBar.SetHealth(enemy.enemyHealth);
         }
 
+        /*this fun is foe instantiating bullet from enemy*/
         void Shoot()
         {
             float angle = enemy.moveRight ? 0f : 180f;
