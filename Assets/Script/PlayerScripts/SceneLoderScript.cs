@@ -9,7 +9,7 @@ namespace Elle2D
     public class SceneLoderScript : MonoBehaviour
     {
         private Button button;
-        public string sceneName;
+        [SerializeField] public string sceneName;
         private void Awake()
         {
             button = GetComponent<Button>();

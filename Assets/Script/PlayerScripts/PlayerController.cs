@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Elle2D
 {
-    public class PlayerController :  MonoBehaviour
+    public class PlayerController : MonoBehaviour
     {
         private Animator animator;
         private CapsuleCollider2D capCollider2D;

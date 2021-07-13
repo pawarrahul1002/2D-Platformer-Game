@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Elle2D
 {
-    public class EnemyController :  MonoBehaviour
+    public class EnemyController : MonoBehaviour
     {
         [SerializeField] float speed;
         public bool moveRight;
-        [SerializeField] int enemyHealth = 40;
+        public int enemyHealth = 40;
         [SerializeField] bool idleEnemy = false;
         public Animator anim;
 
@@ -66,9 +66,10 @@ namespace Elle2D
         IEnumerator PlayDeadEnemy()
         {
             anim.SetBool("Dead", true);
+
             idleEnemy = true;
-            yield return new WaitForSeconds(3f);
-            Destroy(gameObject);
+            yield return new WaitForSeconds(1f);
+             gameObject.SetActive(false);
         }
 
 

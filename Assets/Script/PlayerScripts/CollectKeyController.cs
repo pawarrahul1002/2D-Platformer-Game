@@ -13,7 +13,7 @@ namespace Elle2D
             {
                 PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
                 playerController.PickUpKey();
-                Destroy(gameObject);
+                 gameObject.SetActive(false);
             }
         }
     }
