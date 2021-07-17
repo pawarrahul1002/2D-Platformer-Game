@@ -38,5 +38,5 @@ namespace Elle2D
             }
 
         }
-    }
+    }// class
 }

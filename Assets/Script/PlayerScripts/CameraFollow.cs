@@ -19,6 +19,7 @@ namespace Elle2D
             Vector3 smoothPos = Vector3.Lerp(transform.position, targetPosition, smoothFactor * Time.deltaTime);
             transform.position = smoothPos;
 
-        }
-    }
+        }//Follow
+
+    }// class
 }

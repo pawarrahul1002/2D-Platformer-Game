@@ -33,7 +33,6 @@ namespace  Elle2D
 
         public void PlayMusic(Sounds sound)
         {
-
             AudioClip clip = getSoundClip(sound);
             if (clip != null)
             {
@@ -44,7 +43,8 @@ namespace  Elle2D
             {
                 Debug.LogError("Clip not found : " + sound);
             }
-        }
+
+        }//PlayMusic
 
         public void Play(Sounds sound)
         {
@@ -57,7 +57,8 @@ namespace  Elle2D
             {
                 Debug.LogError("Clip not found : " + sound);
             }
-        }
+
+        }//Play
 
         private AudioClip getSoundClip(Sounds sound)
         {
@@ -68,14 +69,16 @@ namespace  Elle2D
             }
             return null;
         }
-    }
+
+    }// class
 
     [Serializable]
     public class SoundType
     {
         public Sounds soundType;
         public AudioClip SoundClip;
-    }
+
+    }// class
 
 }
 public enum Sounds

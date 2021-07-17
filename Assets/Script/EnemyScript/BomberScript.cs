@@ -32,5 +32,5 @@ namespace Elle2D
             gameObject.SetActive(false);
         }
 
-    }
+    }//class
 }

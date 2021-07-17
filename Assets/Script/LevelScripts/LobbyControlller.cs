@@ -21,5 +21,5 @@ namespace Elle2D
             Application.Quit(); 
         }
 
-    }
+    }// class
 }

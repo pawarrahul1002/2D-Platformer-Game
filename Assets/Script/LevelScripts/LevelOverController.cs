@@ -17,6 +17,7 @@ namespace Elle2D
                     LevelManager.Instance.MarkCurrentLevelComplete();
                     player.nextSceneButtonImage.gameObject.SetActive(true);
             }
-        }
-    }
+        }//OnTriggerEnter2D
+
+    }// class
 } 

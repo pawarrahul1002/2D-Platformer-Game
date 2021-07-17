@@ -11,14 +11,13 @@ namespace Elle2D
         [SerializeField] public LayerMask playerLayer;
         [SerializeField] public Transform leftCollison;
         [SerializeField] public GameObject bombPrefab;
+        [SerializeField] public float fireRate;
+        [SerializeField] AudioClip[] gunnerSounds;
         public EnemyController enemy;
-
         public HealthBar healthBar;
         private float timeuntillFire;
-        [SerializeField] public float fireRate;
 
         private AudioSource audioSource;
-        [SerializeField] AudioClip[] gunnerSounds;
 
         private void Awake()
         {
@@ -55,7 +54,7 @@ namespace Elle2D
                 }
 
             }
-        }
+        }//checkCollision
 
         void CheckGunnerhealth()
         {
@@ -68,7 +67,6 @@ namespace Elle2D
             float angle = enemy.moveRight ? 0f : 180f;
             Instantiate(bombPrefab, leftCollison.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
         }
-    }
 
-
-}// class
+    }//class
+}

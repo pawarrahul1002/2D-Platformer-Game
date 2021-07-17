@@ -16,8 +16,10 @@ namespace Elle2D
                 PlayerController playerController = collison.gameObject.GetComponent<PlayerController>();
                 playerController.KillPlayer();
             }
-        }
-    }
+            
+        }//OnTriggerEnter2D
+
+    } // class
 }
 
 

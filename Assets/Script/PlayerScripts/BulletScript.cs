@@ -25,12 +25,13 @@ namespace Elle2D
                 enemy.TakeDamage(damage);
                 gameObject.SetActive(false);
             }
-        }
+
+        }//OnTriggerEnter2D
 
         private void OnBecameInvisible()
         {
             gameObject.SetActive(false);
         }
 
-    }
+    }// class
 }
