@@ -2,9 +2,9 @@
 
 namespace Elle2D
 {
-    //this is camera script
+    //this is camera script we use lerp and smooth factor for smooth movement of camera
     public class CameraFollow : MonoBehaviour
-    {
+    { 
         [SerializeField] private Transform target;
         [SerializeField] private Vector3 offset;
         [Range(1, 10)]

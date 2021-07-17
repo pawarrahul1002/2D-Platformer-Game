@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 namespace Elle2D
 {
+    /*this class is for level over part we use box collider with trigger 
+    when player touches collider new scene button will become active */
     public class LevelOverController : MonoBehaviour
     {
         public PlayerController player;
@@ -17,4 +19,4 @@ namespace Elle2D
             }
         }
     }
-}
+} 

@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace Elle2D
 {
-    public class MovingPlatform : MonoBehaviour
+    //this class is used for moving platform up and down with help of coroutine
+    public class MovingPlatform :  MonoBehaviour
     {
         Vector3 moveDirection = Vector3.down;
         [SerializeField] float speed = 4f;

@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 namespace Elle2D
 {
+    /*this class is for buttons of lobby*/
     public class LobbyControlller : MonoBehaviour
     {
         public string gameSceneName;
@@ -17,7 +18,7 @@ namespace Elle2D
         public void QuitButton()
         {
             Debug.Log("Should Quit");
-            Application.Quit();
+            Application.Quit(); 
         }
 
     }

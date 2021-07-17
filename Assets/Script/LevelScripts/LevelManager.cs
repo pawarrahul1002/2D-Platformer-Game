@@ -5,13 +5,15 @@ using System;
 
 namespace Elle2D
 {
+    /*this is levelmanager class we use singleton here to
+     keep only one instance all over the game*/
     public class LevelManager : MonoBehaviour
     {
         private static LevelManager instance;
 
         [SerializeField]
         private string[] Levels;
-        public static LevelManager Instance { get { return instance; } }
+        public static LevelManager Instance { get { return instance; } } 
         private void Awake()
         {
             if (instance == null)

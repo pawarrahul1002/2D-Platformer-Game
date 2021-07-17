@@ -4,13 +4,22 @@ using UnityEngine;
 
 namespace Elle2D
 {
+    //this class controlls movement, health, damage of enemies  
     public class EnemyController : MonoBehaviour
     {
         [SerializeField] float speed;
-        [SerializeField] bool moveRight;
-        [SerializeField] int enemyHealth = 40;
+        public bool moveRight;
+        public int enemyHealth = 40;
         [SerializeField] bool idleEnemy = false;
         public Animator anim;
+
+        void Update()
+        {
+            if (!idleEnemy)
+            {
+                MoveEnemy();
+            }
+        }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
@@ -23,17 +32,20 @@ namespace Elle2D
 
         private void MoveEnemy()
         {
+
+            Vector3 scale = transform.localScale;
             if (moveRight)
             {
-                transform.Translate(2 * Time.deltaTime * speed, 0, 0);
-                transform.localScale = new Vector2(1.25f, 1.25f);
+                transform.Translate(speed * Time.deltaTime, 0, 0);
+                scale.x = 1 * Mathf.Abs(scale.x);
             }
             else
             {
-
-                transform.Translate(-2 * Time.deltaTime * speed, 0, 0);
-                transform.localScale = new Vector2(-1.25f, 1.25f);
+                transform.Translate(-speed * Time.deltaTime, 0, 0);
+                scale.x = -1 * Mathf.Abs(scale.x);
             }
+
+            transform.localScale = scale;
         }
 
         private void OnTriggerEnter2D(Collider2D trig)
@@ -63,17 +75,13 @@ namespace Elle2D
         IEnumerator PlayDeadEnemy()
         {
             anim.SetBool("Dead", true);
-            yield return new WaitForSeconds(0.5f);
-            Destroy(gameObject);
+
+            idleEnemy = true;
+            yield return new WaitForSeconds(1f);
+            gameObject.SetActive(false);
         }
 
 
-        void Update()
-        {
-            if (!idleEnemy)
-            {
-                MoveEnemy();
-            }
-        }
+
     }
 }

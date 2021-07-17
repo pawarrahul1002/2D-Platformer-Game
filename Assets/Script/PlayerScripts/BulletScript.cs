@@ -11,6 +11,8 @@ namespace Elle2D
         [SerializeField] int damage = 10;
         public Rigidbody2D rb;
         public PlayerController player;
+
+
         void Start()
         {
             rb.velocity = transform.right * speed;
@@ -21,15 +23,13 @@ namespace Elle2D
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                Destroy(gameObject);
+                gameObject.SetActive(false);
             }
         }
 
-
-
         private void OnBecameInvisible()
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
 
     }
