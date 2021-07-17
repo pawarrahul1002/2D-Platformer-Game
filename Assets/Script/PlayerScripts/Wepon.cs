@@ -13,14 +13,11 @@ namespace Elle2D
         private float timeuntillFire;
         [SerializeField] float fireRate = 0.2f;
         PlayerController playerMovement;
-
-        Vector3 originalPos;
         Vector3 crouchFirePointPos;
 
         private void Start()
         {
             playerMovement = gameObject.GetComponent<PlayerController>();
-            originalPos = firePoint.position;
         }
 
         private void Update()
@@ -42,10 +39,11 @@ namespace Elle2D
             }
             else if (playerMovement.crouch)
             {
-                crouchFirePointPos = new Vector3(firePoint.position.x, originalPos.y - 1.5f, 0);
+                crouchFirePointPos = new Vector3(firePoint.position.x, firePoint.position.y - 1.42f, 0);
                 Instantiate(bulletPrefab, crouchFirePointPos, Quaternion.Euler(new Vector3(0f, 0f, angle)));
             }
-        }
 
-    }
+        }//Shoot
+
+    }// class
 }

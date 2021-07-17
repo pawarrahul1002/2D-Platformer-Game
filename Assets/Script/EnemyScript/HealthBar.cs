@@ -20,5 +20,5 @@ namespace Elle2D
         {
             slider.value = health;
         }
-    }
+    }// class
 }

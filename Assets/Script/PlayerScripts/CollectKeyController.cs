@@ -15,7 +15,9 @@ namespace Elle2D
                 playerController.PickUpKey();
                  gameObject.SetActive(false);
             }
-        }
-    }
+
+        }//OnCollisionEnter2D
+
+    }// class
 
 }

@@ -21,5 +21,5 @@ namespace Elle2D
             SceneManager.LoadScene(sceneName);
         }
 
-    }
+    }// class
 }

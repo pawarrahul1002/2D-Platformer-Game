@@ -30,5 +30,6 @@ namespace Elle2D
         {
             scoreText.text = "Score: " + score;
         }
-    }
+
+    }// class
 }

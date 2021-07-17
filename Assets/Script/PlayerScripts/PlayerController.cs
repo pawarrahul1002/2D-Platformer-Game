@@ -12,11 +12,8 @@ namespace Elle2D
         private Rigidbody2D rb2D;
 
         [Header("Collider position")]
-
         [SerializeField] Vector2 colliderOffset;
-
         [SerializeField] Vector2 crouchColliderOffset;
-
         [SerializeField] Vector2 colliderSize;
         [SerializeField] Vector2 crouchColliderSize;
 
@@ -25,13 +22,12 @@ namespace Elle2D
         [SerializeField] float jumpForce;
         [SerializeField] float downForce;
         private bool onGround;
-        private int jumpCount = 0;
+        private bool isJump;
 
         [Header("Health Setting")]
         [SerializeField] int livesRemain = 1;
         [SerializeField] Image[] heart;
         [SerializeField] Text scoreText;
-        // public Text totalScoreText;
         [SerializeField] Image gameOverButtonImage;
         public Image nextSceneButtonImage;
         [SerializeField] ScoreController scoreController;
@@ -44,7 +40,10 @@ namespace Elle2D
         private bool gameOver;
         private float horizantal;
         private float vertical;
-        private float timeForHurt = 0.8f;
+        private float timeForHurt = 1f;
+        private bool isPaused;
+        private string movingPlatformTag = "MovingPlatform";
+        private string staticPlatformTag = "Platform";
 
         [HideInInspector] public bool crouch;
 
@@ -72,12 +71,15 @@ namespace Elle2D
         void start()
         {
             isFacingRight = true;
+            Debug.Log(onGround);
         }
+
         public void PickUpKey()
         {
             audioSource.PlayOneShot(PlayerSounds[(int)(Sounds.key)], volume);
             scoreController.increaseScore(scoreValue);
-        }
+
+        }//PickUpKey
 
         //<summry>
         // killPlayer will reduce health by one and reload player to start position
@@ -87,6 +89,7 @@ namespace Elle2D
 
             audioSource.PlayOneShot(PlayerSounds[(int)(Sounds.playerDied)], volume);
             livesRemain--;
+            capCollider2D.enabled = false;
 
             animator.Play("PlayerHurt");
             StartCoroutine(PlayHurtAnimation());
@@ -95,21 +98,24 @@ namespace Elle2D
             {
                 GameOverButtonText();
             }
-        }
+
+        }//KillPlayer
 
         IEnumerator PlayHurtAnimation()
         {
             yield return new WaitForSeconds(timeForHurt);
 
+
             transform.position = Vector2.zero;
             Vector3 startScale = transform.localScale;
             startScale.x = Mathf.Abs(startScale.x);
             transform.localScale = startScale;
+            capCollider2D.enabled = true;
             animator.Play("Ellen_Idle");
 
-        }
+        }//PlayHurtAnimation
 
-        //this text func helps in showing final score
+        //GameOverButtonText func helps in showing final score
         public void GameOverButtonText()
         {
             gameOverButtonImage.gameObject.SetActive(true);
@@ -126,57 +132,80 @@ namespace Elle2D
                 heart[livesRemain].gameObject.SetActive(false);
                 gameOver = true;
             }
-        }
+
+        }//updateLifeUI
 
         ///from here script is for  movement
-
         private void Update()
         {
             horizantal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Jump");      //use "Jump" or "Vertical" both are same
             crouch = Input.GetKey(KeyCode.DownArrow);
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                isPaused = !isPaused;
+                PauseGame();
+            }
 
-        }
+        }//Update
+
+        void PauseGame()
+        {
+            if (isPaused)
+            {
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                Time.timeScale = 1f;
+            }
+
+        }//PauseGame
 
         private void FixedUpdate()
         {
             MoveCharacter(horizantal, vertical);
             PlayMovementAniamation(horizantal, vertical, crouch);
-        }
+
+        }//FixedUpdate
 
         // checking Player on ground or not and setting bool onGround
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.gameObject.CompareTag("Platform"))
+            if (collision.gameObject.CompareTag(staticPlatformTag))
             {
                 onGround = true;
             }
-            if (collision.gameObject.CompareTag("MovingPlatform"))
+            if (collision.gameObject.CompareTag(movingPlatformTag))
             {
                 onGround = true;
                 transform.parent = collision.transform;
                 rb2D.gravityScale = 0;
             }
-        }
+
+        }//OnCollisionEnter2D
+
         private void OnCollisionExit2D(Collision2D collision)
         {
-            if (collision.gameObject.CompareTag("Platform"))
+            if (collision.gameObject.CompareTag(staticPlatformTag))
             {
                 onGround = false;
             }
-            if (collision.gameObject.CompareTag("MovingPlatform"))
+            if (collision.gameObject.CompareTag(movingPlatformTag))
             {
                 onGround = false;
                 transform.parent = null;
                 rb2D.gravityScale = 1;
             }
-        }
+
+        }//OnCollisionExit2D
 
         private void MoveCharacter(float horizantal, float vertical)
         {
             RunChar(horizantal);
             JumpChar(vertical);
-        }
+
+        }//MoveCharacter
 
         void RunChar(float horizantal)
         {
@@ -184,7 +213,8 @@ namespace Elle2D
             Vector3 pos = transform.position;
             pos.x += horizantal * speed * Time.deltaTime;
             transform.position = pos;
-        }
+
+        }//RunChar
 
         void JumpChar(float vertical)
         {
@@ -194,14 +224,15 @@ namespace Elle2D
                 onGround = false;
             }
 
-        }
+        }//JumpChar
         private void PlayMovementAniamation(float horizantal, float vertical, bool crouch)
         {
             RunAnim(horizantal);
             JumpAnim(vertical);
             CrouchAnim(crouch);
             IdleWithGun();
-        }
+
+        }//PlayMovementAniamation
 
         private void IdleWithGun()
         {
@@ -217,7 +248,7 @@ namespace Elle2D
                 animator.SetBool("WithGun", false);
             }
 
-        }
+        }//IdleWithGun
 
         //RunAnim fun for run animation
         void RunAnim(float horizantal)
@@ -235,18 +266,19 @@ namespace Elle2D
                 scale.x = Mathf.Abs(scale.x);
             }
             transform.localScale = scale;
-        }
+
+        }//RunAnim
 
         void JumpAnim(float vertical)
         {
             if (vertical > 0 && rb2D.velocity.y > 0)
             {
-                if (jumpCount == 0 && onGround == false)
+                if (isJump == false && onGround == false)
                 {
 
                     audioSource.PlayOneShot(PlayerSounds[(int)Sounds.jump], volume);
                     animator.SetBool("IsJump", true);
-                    jumpCount = 1;
+                    isJump = true;
                 }
                 animator.SetBool("JumpFall", false);
             }
@@ -258,9 +290,8 @@ namespace Elle2D
 
                 if (onGround == true)
                 {
-                    jumpCount = 0;
+                    isJump = false;
                     animator.SetBool("JumpFall", false);
-
                 }
             }
             if ((rb2D.velocity.y == 0) && (onGround == true))
@@ -272,7 +303,7 @@ namespace Elle2D
             {
                 animator.SetBool("JumpFall", true);
             }
-        }
+        }//JumpAnim
 
         void CrouchAnim(bool crouch)
         {
@@ -289,7 +320,10 @@ namespace Elle2D
                 capCollider2D.offset = new Vector2(colliderOffset.x, colliderOffset.y);
                 capCollider2D.size = new Vector2(colliderSize.x, colliderSize.y);
             }
-        }
-    }
 
-}//class
+        }//CrouchAnim
+        
+    } // class
+
+}
+

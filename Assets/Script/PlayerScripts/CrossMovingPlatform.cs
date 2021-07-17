@@ -14,6 +14,8 @@ namespace Elle2D
             float y = Mathf.Sin(Time.time) * distance;
             float z = transform.position.z;
             transform.position = new Vector3(x, y, z);
-        }
-    }
+        }//CrossMovingPlatform
+
+    } // class
+    
 }

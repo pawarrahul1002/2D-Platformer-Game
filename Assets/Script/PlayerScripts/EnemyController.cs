@@ -8,9 +8,9 @@ namespace Elle2D
     public class EnemyController : MonoBehaviour
     {
         [SerializeField] float speed;
+        [SerializeField] bool idleEnemy = false;
         public bool moveRight;
         public int enemyHealth = 40;
-        [SerializeField] bool idleEnemy = false;
         public Animator anim;
 
         void Update()
@@ -28,7 +28,8 @@ namespace Elle2D
                 PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
                 playerController.KillPlayer();
             }
-        }
+
+        }//OnCollisionEnter2D
 
         private void MoveEnemy()
         {
@@ -46,7 +47,8 @@ namespace Elle2D
             }
 
             transform.localScale = scale;
-        }
+
+        }//MoveEnemy
 
         private void OnTriggerEnter2D(Collider2D trig)
         {
@@ -61,7 +63,8 @@ namespace Elle2D
                     moveRight = true;
                 }
             }
-        }
+
+        }//OnTriggerEnter2D
 
         public void TakeDamage(int damage)
         {
@@ -70,7 +73,8 @@ namespace Elle2D
             {
                 StartCoroutine(PlayDeadEnemy());
             }
-        }
+
+        }//TakeDamage
 
         IEnumerator PlayDeadEnemy()
         {
@@ -81,7 +85,6 @@ namespace Elle2D
             gameObject.SetActive(false);
         }
 
+    } // class
 
-
-    }
 }

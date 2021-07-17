@@ -50,6 +50,7 @@ namespace Elle2D
             {
                 SetLevelStatus(Levels[nextSceneINdex], LevelStatus.Unlocked);
             }
+            
         }
 
 
@@ -57,5 +58,6 @@ namespace Elle2D
         {
             PlayerPrefs.SetInt(level, (int)levelStatus);
         }
-    }
+
+    }// class
 }

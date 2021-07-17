@@ -38,8 +38,9 @@ namespace Elle2D
             }
 
             StartCoroutine(ChangeDirection());
-        }
 
-    }
+        }//ChangeDirection
+
+    } // class
 
 }
